@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: Arial, sans-serif;
+    margin: 40px;
+    color: #1a1a1a;
+    background: #fff;
+  }
+
+  /* ── Upload screen ── */
+  .upload-box {
+    text-align: center;
+    margin-top: 120px;
+  }
+  .upload-box h2 {
+    font-size: 22px;
+    margin-bottom: 20px;
+    color: #50264E;
+  }
+  .upload-box input[type="file"] {
+    display: block;
+    margin: 0 auto 16px;
+    font-size: 15px;
+  }
+  .upload-box button {
+    background: #50264E;
+    color: #fff;
+    border: none;
+    padding: 10px 28px;
+    border-radius: 4px;
+    font-size: 15px;
+    cursor: pointer;
+  }
+  .upload-box button:hover { background: #3a1a38; }
+
+  /* ── Report layout ── */
+  .report-title {
+    text-align: center;
+    font-size: 26px;
+    font-weight: bold;
+    color: #50264E;
+    margin-bottom: 36px;
+    padding-bottom: 12px;
+    border-bottom: 3px solid #50264E;
+  }
+
+  /* ── Sheet section ── */
+  .sheet-section {
+    margin-bottom: 48px;
+    page-break-before: always;
+  }
+  .sheet-section:first-of-type {
+    page-break-before: avoid;
+  }
+  .sheet-title {
+    font-size: 20px;
+    font-weight: bold;
+    color: #fff;
+    background: #50264E;
+    padding: 10px 16px;
+    border-radius: 4px 4px 0 0;
+    margin-bottom: 0;
+  }
+
+  /* ── Per-record card ── */
+  .issue-card {
+    page-break-inside: avoid;
+    margin-bottom: 36px;
+    border: 1px solid #ddd;
+    border-radius: 0 0 4px 4px;
+  }
+  .issue-card:not(:first-child) {
+    border-radius: 4px;
+    margin-top: 16px;
+  }
+
+  .issue-heading {
+    font-size: 15px;
+    font-weight: bold;
+    background: #f4eef4;
+    color: #50264E;
+    padding: 8px 14px;
+    border-bottom: 2px solid #50264E;
+  }
+
+  /* ── Data table ── */
+  table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+  td {
+    border: 1px solid #ccc;
+    padding: 8px 12px;
+    vertical-align: top;
+    font-size: 13px;
+    line-height: 1.5;
+  }
+  .label {
+    width: 22%;
+    font-weight: bold;
+    background: #50264E;
+    color: #fff;
+    white-space: nowrap;
+  }
+  .value {
+    width: 78%;
+    background: #fff;
+    word-break: break-word;
+  }
+
+  /* Status badge */
+  .badge {
+    display: inline-block;
+    padding: 2px 10px;
+    border-radius: 10px;
+    font-size: 12px;
+    font-weight: bold;
+  }
+  .badge-fixed    { background: #d4edda; color: #155724; }
+  .badge-open     { background: #f8d7da; color: #721c24; }
+  .badge-progress { background: #fff3cd; color: #856404; }
+  .badge-default  { background: #e2e3e5; color: #383d41; }
+
+  /* ── Simple grid sheet (≤6 cols, sheet has no "Issue" column) ── */
+  .grid-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 8px;
+  }
+  .grid-table th {
+    background: #50264E;
+    color: #fff;
+    padding: 9px 12px;
+    text-align: left;
+    font-size: 13px;
+    border: 1px solid #3a1a38;
+  }
+  .grid-table td {
+    padding: 8px 12px;
+    border: 1px solid #ccc;
+    font-size: 13px;
+    vertical-align: top;
+    background: #fff;
+  }
+  .grid-table tr:nth-child(even) td { background: #faf5fa; }
+</style>
+</head>
+<body>
+
+{% if sheets is none %}
+<!-- ════════════════  UPLOAD FORM  ════════════════ -->
+<div class="upload-box">
+  <h2>Upload Excel VPAT / Audit File</h2>
+  <form method="POST" enctype="multipart/form-data">
+    <input type="file" name="excel" accept=".xlsx,.xls" required>
+    <br>
+    <button type="submit">Generate PDF Report</button>
+  </form>
+</div>
+
+{% else %}
+<!-- ════════════════  REPORT  ════════════════ -->
+<div class="report-title">Accessibility VPAT Report</div>
+
+{% for sheet in sheets %}
+
+  {# Decide rendering mode:
+     "card" mode  → sheet has many columns and likely one row = one issue
+     "grid" mode  → sheet has few columns (e.g. Project Scope)
+  #}
+  {% set cols = sheet.columns %}
+  {% set use_grid = (cols | length) <= 5 %}
+
+  <div class="sheet-section">
+    <div class="sheet-title">{{ sheet.name }}</div>
+
+    {% if use_grid %}
+    <!-- ── GRID TABLE (compact sheet) ── -->
+    <table class="grid-table">
+      <thead>
+        <tr>
+          {% for col in cols %}
+          <th>{{ col }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        {% for row in sheet.records %}
+        <tr>
+          {% for col in cols %}
+          <td>{{ row[col] }}</td>
+          {% endfor %}
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    {% else %}
+    <!-- ── CARD TABLE (issue-style sheet) ── -->
+    {% for row in sheet.records %}
+    <div class="issue-card">
+
+      {# Try to build a meaningful heading #}
+      {% if "Issue Title" in cols and "Issue Number" in cols %}
+        <div class="issue-heading">Issue {{ row["Issue Number"] }}: {{ row["Issue Title"] }}</div>
+      {% elif "Issue Title" in cols %}
+        <div class="issue-heading">{{ row["Issue Title"] }}</div>
+      {% elif "Issue Number" in cols %}
+        <div class="issue-heading">Issue {{ row["Issue Number"] }}</div>
+      {% else %}
+        <div class="issue-heading">Record {{ loop.index }}</div>
+      {% endif %}
+
+      <table>
+        {% for col in cols %}
+        {# Skip columns already shown in the heading #}
+        {% if col not in ["Issue Title", "Issue Number"] %}
+        <tr>
+          <td class="label">{{ col }}</td>
+          <td class="value">
+            {% set val = row[col] | string %}
+            {% if col == "Status" %}
+              {% if val | lower == "fixed" %}
+                <span class="badge badge-fixed">✔ Fixed</span>
+              {% elif val | lower == "open" %}
+                <span class="badge badge-open">✘ Open</span>
+              {% elif "progress" in val | lower %}
+                <span class="badge badge-progress">⏳ In Progress</span>
+              {% elif val %}
+                <span class="badge badge-default">{{ val }}</span>
+              {% endif %}
+            {% elif val.startswith("http") %}
+              <a href="{{ val }}" style="color:#50264E;">{{ val }}</a>
+            {% else %}
+              {{ val }}
+            {% endif %}
+          </td>
+        </tr>
+        {% endif %}
+        {% endfor %}
+      </table>
+
+    </div>
+    {% endfor %}
+    {% endif %}
+
+  </div>
+{% endfor %}
+
+{% endif %}
+
+</body>
+</html>

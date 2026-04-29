@@ -1,0 +1,6 @@
+services:
+  - type: web
+    name: vpat-report
+    runtime: python
+    buildCommand: "apt-get install -y wkhtmltopdf && pip install -r requirements.txt"
+    startCommand: "gunicorn app:app"
