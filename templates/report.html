@@ -148,6 +148,19 @@
     background: #fff;
   }
   .grid-table tr:nth-child(even) td { background: #faf5fa; }
+ /* ── Cover logo (fills the blank first page) ── */
+.cover-logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: calc(100vh - 120px); /* fills remaining first-page space */
+  page-break-after: always;    /* pushes tables to page 2 */
+}
+.cover-logo img {
+  max-width: 420px;
+  width: 60%;
+  opacity: 0.92;
+}
 </style>
 </head>
 <body>
@@ -166,7 +179,9 @@
 {% else %}
 <!-- ════════════════  REPORT  ════════════════ -->
 <div class="report-title">Accessibility VPAT Report</div>
-
+<div class="cover-logo">
+  <img src="https://flexixcess.com/img/logo4.png" alt="Flexixcess Logo">
+</div>
 {% for sheet in sheets %}
 
   {# Decide rendering mode:
