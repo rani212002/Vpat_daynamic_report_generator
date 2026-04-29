@@ -20,7 +20,7 @@
   .upload-box h2 {
     font-size: 22px;
     margin-bottom: 20px;
-    color: #50264E;
+    color: #642F61;
   }
   .upload-box input[type="file"] {
     display: block;
@@ -28,7 +28,7 @@
     font-size: 15px;
   }
   .upload-box button {
-    background: #50264E;
+    background: #642F61;
     color: #fff;
     border: none;
     padding: 10px 28px;
@@ -36,17 +36,62 @@
     font-size: 15px;
     cursor: pointer;
   }
-  .upload-box button:hover { background: #3a1a38; }
+  .upload-box button:hover { background: #4a1f4a; }
 
-  /* ── Report layout ── */
-  .report-title {
+  /* ── Cover Page ── */
+  .cover-page {
+    background: #642F61;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
     text-align: center;
-    font-size: 26px;
-    font-weight: bold;
-    color: #50264E;
+    padding: 60px 40px;
+    page-break-after: always;
+    margin: -40px;                /* cancel body margin so it fills edge to edge */
+  }
+  .cover-logo-box {
+    background: rgba(255,255,255,0.12);
+    border: 1px solid rgba(255,255,255,0.25);
+    border-radius: 16px;
+    padding: 32px 56px;
     margin-bottom: 36px;
-    padding-bottom: 12px;
-    border-bottom: 3px solid #50264E;
+  }
+  .cover-logo-box img {
+    max-width: 300px;
+    width: 100%;
+    display: block;
+  }
+  .cover-divider {
+    width: 80px;
+    height: 2px;
+    background: rgba(255,255,255,0.4);
+    border-radius: 1px;
+    margin: 0 auto 28px;
+  }
+  .cover-tagline {
+    font-family: Georgia, serif;
+    font-size: 18px;
+    font-style: italic;
+    color: rgba(255,255,255,0.92);
+    line-height: 1.9;
+    letter-spacing: 0.4px;
+    margin-bottom: 28px;
+  }
+  .cover-report-title {
+    font-size: 24px;
+    font-weight: bold;
+    color: #fff;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+  .cover-company {
+    font-size: 13px;
+    color: rgba(255,255,255,0.6);
+    letter-spacing: 2.5px;
+    text-transform: uppercase;
   }
 
   /* ── Sheet section ── */
@@ -54,14 +99,11 @@
     margin-bottom: 48px;
     page-break-before: always;
   }
-  .sheet-section:first-of-type {
-    page-break-before: avoid;
-  }
   .sheet-title {
     font-size: 20px;
     font-weight: bold;
     color: #fff;
-    background: #50264E;
+    background: #642F61;
     padding: 10px 16px;
     border-radius: 4px 4px 0 0;
     margin-bottom: 0;
@@ -83,9 +125,9 @@
     font-size: 15px;
     font-weight: bold;
     background: #f4eef4;
-    color: #50264E;
+    color: #642F61;
     padding: 8px 14px;
-    border-bottom: 2px solid #50264E;
+    border-bottom: 2px solid #642F61;
   }
 
   /* ── Data table ── */
@@ -103,7 +145,7 @@
   .label {
     width: 22%;
     font-weight: bold;
-    background: #50264E;
+    background: #642F61;
     color: #fff;
     white-space: nowrap;
   }
@@ -126,19 +168,19 @@
   .badge-progress { background: #fff3cd; color: #856404; }
   .badge-default  { background: #e2e3e5; color: #383d41; }
 
-  /* ── Simple grid sheet (≤6 cols, sheet has no "Issue" column) ── */
+  /* ── Simple grid sheet ── */
   .grid-table {
     width: 100%;
     border-collapse: collapse;
     margin-top: 8px;
   }
   .grid-table th {
-    background: #50264E;
+    background: #642F61;
     color: #fff;
     padding: 9px 12px;
     text-align: left;
     font-size: 13px;
-    border: 1px solid #3a1a38;
+    border: 1px solid #4a1f4a;
   }
   .grid-table td {
     padding: 8px 12px;
@@ -164,16 +206,23 @@
 </div>
 
 {% else %}
-<!-- ════════════════  REPORT  ════════════════ -->
-<div class="report-title">Accessibility Audit Report</div>
+<!-- ════════════════  COVER PAGE  ════════════════ -->
+<div class="cover-page">
+  <div class="cover-logo-box">
+    <img src="{{ url_for('static', filename='Flexi_logo.png') }}" alt="Flexi Unity Access Logo">
+  </div>
+  <div class="cover-divider"></div>
+  <p class="cover-tagline">
+    "Divided by disability<br>United by Accessibility"
+  </p>
+  <div class="cover-divider"></div>
+  <p class="cover-report-title">Accessibility Audit Report</p>
+  <p class="cover-company">Flexi Unity Access</p>
+</div>
 
-
+<!-- ════════════════  REPORT SHEETS  ════════════════ -->
 {% for sheet in sheets %}
 
-  {# Decide rendering mode:
-     "card" mode  → sheet has many columns and likely one row = one issue
-     "grid" mode  → sheet has few columns (e.g. Project Scope)
-  #}
   {% set cols = sheet.columns %}
   {% set use_grid = (cols | length) <= 5 %}
 
@@ -206,7 +255,6 @@
     {% for row in sheet.records %}
     <div class="issue-card">
 
-      {# Try to build a meaningful heading #}
       {% if "Issue Title" in cols and "Issue Number" in cols %}
         <div class="issue-heading">Issue {{ row["Issue Number"] }}: {{ row["Issue Title"] }}</div>
       {% elif "Issue Title" in cols %}
@@ -219,7 +267,6 @@
 
       <table>
         {% for col in cols %}
-        {# Skip columns already shown in the heading #}
         {% if col not in ["Issue Title", "Issue Number"] %}
         <tr>
           <td class="label">{{ col }}</td>
@@ -236,7 +283,7 @@
                 <span class="badge badge-default">{{ val }}</span>
               {% endif %}
             {% elif val.startswith("http") %}
-              <a href="{{ val }}" style="color:#50264E;">{{ val }}</a>
+              <a href="{{ val }}" style="color:#642F61;">{{ val }}</a>
             {% else %}
               {{ val }}
             {% endif %}
