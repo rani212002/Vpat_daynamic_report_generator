@@ -5,6 +5,10 @@
 <style>
   * { box-sizing: border-box; margin: 0; padding: 0; }
 
+  @page {
+    margin: 32px 40px 40px 40px;
+  }
+
   body {
     font-family: Arial, sans-serif;
     margin: 40px;
@@ -98,6 +102,7 @@
   .sheet-section {
     margin-bottom: 48px;
     page-break-before: always;
+    padding-top: 32px;
   }
   .sheet-title {
     font-size: 20px;
@@ -116,6 +121,7 @@
     margin-top: 6px;
     border: 1px solid #ddd;
     border-radius: 0 0 4px 4px;
+    break-before: avoid;
   }
   .issue-card:not(:first-child) {
     border-radius: 4px;
