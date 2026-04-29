@@ -114,7 +114,14 @@
     margin-bottom: 0;
   }
 
-  /* ── Per-record card ── */
+  @media print {
+    .issue-card {
+      margin-top: 32px !important;
+    }
+    .sheet-section {
+      padding-top: 40px !important;
+    }
+  }
   .issue-card {
     page-break-inside: avoid;
     margin-bottom: 36px;
@@ -261,6 +268,7 @@
     {% else %}
     <!-- ── CARD TABLE (issue-style sheet) ── -->
     {% for row in sheet.records %}
+    <div style="padding-top: 28px; page-break-inside: avoid;">
     <div class="issue-card">
 
       {% if "Issue Title" in cols and "Issue Number" in cols %}
@@ -301,6 +309,7 @@
         {% endfor %}
       </table>
 
+    </div>
     </div>
     {% endfor %}
     {% endif %}
