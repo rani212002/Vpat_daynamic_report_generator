@@ -149,17 +149,69 @@
   }
   .grid-table tr:nth-child(even) td { background: #faf5fa; }
  /* ── Cover logo (fills the blank first page) ── */
-.cover-logo {
+/* ── Cover page ── */
+.cover-page {
+  background: #642F61;
+  min-height: 100vh;
   display: flex;
-  justify-content: center;
+  flex-direction: column;
   align-items: center;
-  height: calc(100vh - 120px); /* fills remaining first-page space */
-  page-break-after: always;    /* pushes tables to page 2 */
+  justify-content: center;
+  text-align: center;
+  padding: 60px 40px;
+  page-break-after: always;
+  position: relative;
+  overflow: hidden;
 }
-.cover-logo img {
-  max-width: 420px;
-  width: 60%;
-  opacity: 0.92;
+.cover-page::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0; bottom: 0;
+  background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.05) 0%, transparent 50%),
+              radial-gradient(circle at 80% 80%, rgba(255,255,255,0.05) 0%, transparent 50%);
+  pointer-events: none;
+}
+.cover-logo-box {
+  background: rgba(255,255,255,0.12);
+  border: 1px solid rgba(255,255,255,0.2);
+  border-radius: 16px;
+  padding: 28px 48px;
+  margin-bottom: 32px;
+}
+.cover-logo-box img {
+  max-width: 280px;
+  width: 100%;
+  display: block;
+}
+.cover-divider {
+  width: 80px;
+  height: 2px;
+  background: rgba(255,255,255,0.4);
+  border-radius: 1px;
+  margin: 0 auto 28px;
+}
+.cover-tagline {
+  font-family: Georgia, serif;
+  font-size: 17px;
+  font-style: italic;
+  color: rgba(255,255,255,0.9);
+  line-height: 1.8;
+  letter-spacing: 0.5px;
+  margin-bottom: 28px;
+}
+.cover-report-title {
+  font-size: 22px;
+  font-weight: bold;
+  color: #fff;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin-bottom: 6px;
+}
+.cover-company {
+  font-size: 13px;
+  color: rgba(255,255,255,0.6);
+  letter-spacing: 2px;
+  text-transform: uppercase;
 }
 </style>
 </head>
@@ -179,8 +231,19 @@
 {% else %}
 <!-- ════════════════  REPORT  ════════════════ -->
 <div class="report-title">Accessibility Audit Report</div>
-<div class="cover-logo">
-  <img src="https://flexixcess.com/img/logo4.png" alt="Flexixcess Logo">
+<div class="cover-page">
+  <div class="cover-logo-box">
+    <img src="https://flexixcess.com/img/logo4.png" alt="Flexi Unity Access Logo">
+    <!-- OR if using local static file: -->
+    <!-- <img src="/static/logo.png" alt="Flexi Unity Access Logo"> -->
+  </div>
+  <div class="cover-divider"></div>
+  <p class="cover-tagline">
+    "Divided by disability<br>United by Accessibility"
+  </p>
+  <div class="cover-divider"></div>
+  <p class="cover-report-title">Accessibility VPAT Report</p>
+  <p class="cover-company">Flexi Unity Access</p>
 </div>
 {% for sheet in sheets %}
 
