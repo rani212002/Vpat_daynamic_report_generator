@@ -148,75 +148,6 @@
     background: #fff;
   }
   .grid-table tr:nth-child(even) td { background: #faf5fa; }
- .cover-page {
-  background: #642f61;
-  min-height: 100vh;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-  padding: 60px 40px;
-  page-break-after: always;
-  position: relative;
-  overflow: hidden;
-}
-.cover-page::before {
-  content: '';
-  position: absolute;
-  top: 0; left: 0; right: 0; bottom: 0;
-  background: radial-gradient(circle at 20% 20%, rgba(255,255,255,0.06) 0%, transparent 55%),
-              radial-gradient(circle at 80% 80%, rgba(255,255,255,0.06) 0%, transparent 55%);
-  pointer-events: none;
-}
-.cover-logo-box {
-  background: rgba(255,255,255,0.13);
-  border: 1.5px solid rgba(255,255,255,0.25);
-  border-radius: 20px;
-  padding: 32px 56px;
-  margin-bottom: 36px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-}
-.cover-logo-box img {
-  max-width: 300px;
-  width: 100%;
-  display: block;
-  margin: 0 auto;
-}
-.cover-divider {
-  width: 90px;
-  height: 2px;
-  background: rgba(255,255,255,0.45);
-  border-radius: 1px;
-  margin: 0 auto 30px;
-}
-.cover-report-title {
-  font-size: 28px;
-  font-weight: bold;
-  color: #fff;
-  letter-spacing: 2px;
-  text-transform: uppercase;
-  margin-bottom: 20px;
-}
-.cover-tagline {
-  font-family: Georgia, serif;
-  font-size: 18px;
-  font-style: italic;
-  color: rgba(255,255,255,0.92);
-  line-height: 1.9;
-  letter-spacing: 0.5px;
-  margin-bottom: 30px;
-  max-width: 420px;
-}
-.cover-company {
-  font-size: 13px;
-  color: rgba(255,255,255,0.55);
-  letter-spacing: 3px;
-  text-transform: uppercase;
-  margin-top: 8px;
-}
 </style>
 </head>
 <body>
@@ -234,19 +165,8 @@
 
 {% else %}
 <!-- ════════════════  REPORT  ════════════════ -->
-<!-- <div class="report-title">Accessibility VPAT Report</div> -->
-<div class="cover-page">
-  <div class="cover-logo-box">
-    <img src="static/Flexi_logo.png" alt="Flexi Unity Access Logo">
-  </div>
-  <div class="cover-divider"></div>
-  <p class="cover-report-title">Accessibility Audit Report</p>
-  <div class="cover-divider"></div>
-  <p class="cover-tagline">
-    &ldquo;Divided by disability<br>United by Accessibility&rdquo;
-  </p>
-  <p class="cover-company">Flexi Unity Access</p>
-</div>
+<div class="report-title">Accessibility Audit Report</div>
+
 
 {% for sheet in sheets %}
 
